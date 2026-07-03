@@ -56,6 +56,24 @@
 #endif
 
 #include <linux/kconfig.h> // for IS_ENABLED()
+#include <linux/version.h>
+
+/*
+ * Linux v7.2 renamed DRM atomic state to DRM atomic commit. Keep the NVIDIA
+ * DRM sources on the old spelling until upstream compatibility tests grow a
+ * dedicated probe for this API transition.
+ */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 2, 0)
+#define drm_atomic_state                 drm_atomic_commit
+#define drm_atomic_state_alloc           drm_atomic_commit_alloc
+#define drm_atomic_state_init            drm_atomic_commit_init
+#define drm_atomic_state_clear           drm_atomic_commit_clear
+#define drm_atomic_state_default_clear   drm_atomic_commit_default_clear
+#define drm_atomic_state_default_release drm_atomic_commit_default_release
+#define drm_atomic_state_put             drm_atomic_commit_put
+#define NV_DRM_CRTC_ATOMIC_CHECK_HAS_ATOMIC_STATE_ARG
+#define NV_DRM_PLANE_ATOMIC_CHECK_HAS_ATOMIC_STATE_ARG
+#endif
 
 #if (IS_ENABLED(CONFIG_DRM) && IS_ENABLED(CONFIG_DRM_KMS_HELPER)) ||           \
     defined(__FreeBSD__)
